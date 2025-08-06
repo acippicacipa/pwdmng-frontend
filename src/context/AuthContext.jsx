@@ -13,6 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [masterPassword, setMasterPassword] = useState(null) // State untuk master password
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://acippicacipa2.pythonanywhere.com/api'
 
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         setUser(data.user)
+        setMasterPassword(password) // Simpan master password sementara setelah login
         return { success: true }
       } else {
         return { success: false, error: data.error }
@@ -96,6 +98,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Logout error:', error)
     } finally {
       setUser(null)
+      setMasterPassword(null) // Hapus master password saat logout
     }
   }
 
@@ -105,7 +108,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    API_BASE_URL
+    API_BASE_URL,
+    masterPassword // Tambahkan masterPassword ke value
   }
 
   return (

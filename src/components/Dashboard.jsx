@@ -5,32 +5,38 @@ import PasswordList from './PasswordList'
 import './Dashboard.css'
 
 const Dashboard = () => {
-  const { user, logout, API_BASE_URL } = useAuth()
+  const { user, logout, API_BASE_URL, masterPassword } = useAuth()
   const [passwords, setPasswords] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingPassword, setEditingPassword] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
 
   useEffect(() => {
-    fetchPasswords()
-  }, [])
+    if (masterPassword) { // Hanya fetch jika masterPassword tersedia
+      fetchPasswords()
+    }
+  }, [masterPassword]) // Tambahkan masterPassword sebagai dependency
 
   const fetchPasswords = async () => {
+    if (!masterPassword) return // Pastikan masterPassword ada
     try {
       const response = await fetch(`${API_BASE_URL}/passwords`, {
-        credentials: 'include'
+        credentials: "include",
+        headers: {
+          "X-Master-Password": masterPassword,
+        },
       })
       
       if (response.ok) {
         const data = await response.json()
         setPasswords(data)
       } else {
-        console.error('Failed to fetch passwords')
+        console.error("Failed to fetch passwords")
       }
     } catch (error) {
-      console.error('Error fetching passwords:', error)
+      console.error("Error fetching passwords:", error)
     } finally {
       setLoading(false)
     }
@@ -47,41 +53,47 @@ const Dashboard = () => {
   }
 
   const handleDeletePassword = async (passwordId) => {
-    if (!window.confirm('Are you sure you want to delete this password?')) {
+    if (!window.confirm("Are you sure you want to delete this password?")) {
       return
     }
+    if (!masterPassword) return // Pastikan masterPassword ada
 
     try {
       const response = await fetch(`${API_BASE_URL}/passwords/${passwordId}`, {
-        method: 'DELETE',
-        credentials: 'include'
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "X-Master-Password": masterPassword,
+        },
       })
 
       if (response.ok) {
         setPasswords(passwords.filter(p => p.id !== passwordId))
       } else {
-        alert('Failed to delete password')
+        alert("Failed to delete password")
       }
     } catch (error) {
-      console.error('Error deleting password:', error)
-      alert('Error deleting password')
+      console.error("Error deleting password:", error)
+      alert("Error deleting password")
     }
   }
 
   const handleFormSubmit = async (formData) => {
+    if (!masterPassword) return // Pastikan masterPassword ada
     try {
       const url = editingPassword 
         ? `${API_BASE_URL}/passwords/${editingPassword.id}`
         : `${API_BASE_URL}/passwords`
       
-      const method = editingPassword ? 'PUT' : 'POST'
+      const method = editingPassword ? "PUT" : "POST"
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "X-Master-Password": masterPassword, // Kirim master password di header
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(formData),
       })
 
@@ -91,11 +103,11 @@ const Dashboard = () => {
         setEditingPassword(null)
       } else {
         const data = await response.json()
-        alert(data.error || 'Failed to save password')
+        alert(data.error || "Failed to save password")
       }
     } catch (error) {
-      console.error('Error saving password:', error)
-      alert('Error saving password')
+      console.error("Error saving password:", error)
+      alert("Error saving password")
     }
   }
 

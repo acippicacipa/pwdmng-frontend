@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [masterPassword, setMasterPassword] = useState(null) // State untuk master password
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://acippicacipa2.pythonanywhere.com/api'
+  const API_BASE_URL = 
 
   // Check authentication status on app load
   useEffect(() => {
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/check-auth`, {
+      const response = await fetch(`/api/check-auth`, {
         credentials: 'include'
       })
       
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch(`/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
+      const response = await fetch(`/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch(`${API_BASE_URL}/logout`, {
+      await fetch(`/api/logout`, {
         method: 'POST',
         credentials: 'include',
       })
@@ -108,7 +108,6 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    API_BASE_URL,
     masterPassword // Tambahkan masterPassword ke value
   }
 
@@ -118,4 +117,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   )
 }
-

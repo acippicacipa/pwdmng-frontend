@@ -6,11 +6,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-        '/api': {
-          target: 'https://acippicacipa2.pythonanywhere.com',
-          changeOrigin: true,
-          secure: false,
-        },
+      '/api': {
+        target: 'http://acippicacipa2.pythonanywhere.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        secure: false, // Set to true if your backend uses HTTPS
       },
+    },
   },
 })

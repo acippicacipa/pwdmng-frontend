@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://acippicacipa2.pythonanywhere.com',
+        target: 'https://acippicacipa2.pythonanywhere.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
         secure: false, // Set to true if your backend uses HTTPS

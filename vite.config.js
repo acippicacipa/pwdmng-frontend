@@ -10,7 +10,6 @@ export default defineConfig({
       '/api': {
         target: 'https://acippicacipa2.pythonanywhere.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
         secure: false, // Set to true if your backend uses HTTPS
       },
     },

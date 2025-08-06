@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext' // Import useAuth
 import './PasswordForm.css'
 
 const PasswordForm = ({ password, onSubmit, onCancel }) => {
+  const { masterPassword } = useAuth() // Dapatkan masterPassword dari AuthContext
   const [formData, setFormData] = useState({
     title: '',
     website: '',
@@ -73,7 +75,8 @@ const PasswordForm = ({ password, onSubmit, onCancel }) => {
       return
     }
 
-    await onSubmit(formData)
+    // Panggil onSubmit dari Dashboard, kirimkan formData dan masterPassword
+    await onSubmit(formData, masterPassword)
     setLoading(false)
   }
 
